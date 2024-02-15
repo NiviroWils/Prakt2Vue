@@ -11,7 +11,9 @@ let app = new Vue({
         column2Full: false, // Переменная для отслеживания переполнения второго столбца
         newNoteTitle: '', // Заголовок новой заметки
         newNoteItems: ['', '', ''], // Пункты новой заметки
-        showForm: false
+        newNoteItems5: ['', '', '','',''], // Пункты новой заметки
+        showForm: false,
+        selectedItemsCount: 3,
     },
     mounted() {
         // Загрузка данных из localStorage при запуске
@@ -25,9 +27,17 @@ let app = new Vue({
             this.showForm = !this.showForm; // Переключаем видимость формы при нажатии на кнопку
         },
         addNote() {
+            // Определяем массив пунктов в зависимости от выбранного количества
+            let noteItemsArray;
+            if (this.selectedItemsCount === '5') {
+                noteItemsArray = this.newNoteItems5;
+            } else {
+                noteItemsArray = this.newNoteItems;
+            }
+
             const newCard = {
                 title: this.newNoteTitle || 'Новая заметка',
-                items: this.newNoteItems.map(text => ({ text, completed: false })),
+                items: noteItemsArray.map(text => ({ text, completed: false })),
                 completedDate: null,
             };
 
@@ -37,8 +47,10 @@ let app = new Vue({
             // Сброс формы и скрытие её после добавления заметки
             this.newNoteTitle = '';
             this.newNoteItems = ['', '', ''];
+            this.newNoteItems5 = ['', '', '', '', ''];
             this.showForm = false;
         },
+
         addCard(column, withCheckboxes = false) {
             if (column.cards.length < column.maxCards) {
                 const newCard = {
