@@ -42,24 +42,16 @@ let app = new Vue({
             const completedCount = card.items.filter(item => item.completed).length;
             const totalItems = card.items.length;
 
-            if (column.title === 'Столбец 2' && completedCount === totalItems) {
-                this.column1Blocked = false;
-            }
-
-            if (completedCount / totalItems > 0.5) {
-                if (column.title === 'Столбец 1' && !this.column1Blocked) {
-                    this.moveCard(card, column, this.columns[1]);
-                } else if (column.title === 'Столбец 2') {
-                    this.moveCard(card, column, this.columns[2]);
-                }
-            } else if (completedCount === 1 && column.title === 'Столбец 1' && !this.column1Blocked) {
+            if (column.title === 'Столбец 1' && completedCount >= 1 && !this.column1Blocked) {
                 this.moveCard(card, column, this.columns[1]);
-            } else if (completedCount === totalItems && column.title === 'Столбец 1' && !this.column1Blocked) {
+            } else if (column.title === 'Столбец 1' && completedCount === 0 && !this.column1Blocked) {
+                return; // Если ни один пункт не отмечен, ничего не делаем
+            } else if (column.title === 'Столбец 2' && completedCount === totalItems) {
                 this.moveCard(card, column, this.columns[2]);
-            } else if (completedCount < totalItems && column.title === 'Столбец 3') {
+            } else if (column.title === 'Столбец 2' && completedCount === 0) {
+                this.moveCard(card, column, this.columns[0]); // Переносим обратно в первый столбец, если ни один пункт не отмечен
+            } else if (column.title === 'Столбец 3' && completedCount < totalItems) {
                 this.moveCard(card, column, this.columns[1]);
-            } else if (completedCount === 0 && column.title === 'Столбец 2') {
-                this.moveCard(card, column, this.columns[0]);
             }
 
             if (completedCount === totalItems) {
@@ -68,6 +60,9 @@ let app = new Vue({
 
             this.saveToLocalStorage();
         },
+
+
+
         moveCard(card, fromColumn, toColumn) {
             if (toColumn.cards.length < toColumn.maxCards) {
                 fromColumn.cards.splice(fromColumn.cards.indexOf(card), 1);
