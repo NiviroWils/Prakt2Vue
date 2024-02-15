@@ -9,6 +9,9 @@ let app = new Vue({
         newCardText: '',
         column1Blocked: false, // Переменная для отслеживания блокировки первого столбца
         column2Full: false, // Переменная для отслеживания переполнения второго столбца
+        newNoteTitle: '', // Заголовок новой заметки
+        newNoteItems: ['', '', ''], // Пункты новой заметки
+        showForm: false
     },
     mounted() {
         // Загрузка данных из localStorage при запуске
@@ -18,6 +21,24 @@ let app = new Vue({
         }
     },
     methods: {
+        toggleForm() {
+            this.showForm = !this.showForm; // Переключаем видимость формы при нажатии на кнопку
+        },
+        addNote() {
+            const newCard = {
+                title: this.newNoteTitle || 'Новая заметка',
+                items: this.newNoteItems.map(text => ({ text, completed: false })),
+                completedDate: null,
+            };
+
+            this.columns[0].cards.push(newCard);
+            this.saveToLocalStorage();
+
+            // Сброс формы и скрытие её после добавления заметки
+            this.newNoteTitle = '';
+            this.newNoteItems = ['', '', ''];
+            this.showForm = false;
+        },
         addCard(column, withCheckboxes = false) {
             if (column.cards.length < column.maxCards) {
                 const newCard = {
@@ -50,6 +71,8 @@ let app = new Vue({
                 this.moveCard(card, column, this.columns[2]);
             } else if (column.title === 'Столбец 2' && completedCount === 0) {
                 this.moveCard(card, column, this.columns[0]); // Переносим обратно в первый столбец, если ни один пункт не отмечен
+            } else if (column.title === 'Столбец 3' && completedCount === totalItems) { // Заменим эту строку
+                this.moveCard(card, column, this.columns[2]); // Переносим заметку в третий столбец, если все пункты отмечены
             } else if (column.title === 'Столбец 3' && completedCount < totalItems) {
                 this.moveCard(card, column, this.columns[1]);
             }
@@ -61,7 +84,24 @@ let app = new Vue({
             this.saveToLocalStorage();
         },
 
+        showAddNoteForm() {
+            this.showForm = true;
+        },
+        addNote() {
+            const newCard = {
+                title: this.newNoteTitle || 'Новая заметка',
+                items: this.newNoteItems.map(text => ({ text, completed: false })),
+                completedDate: null,
+            };
 
+            this.columns[0].cards.push(newCard);
+            this.saveToLocalStorage();
+
+            // Сброс формы и скрытие её после добавления заметки
+            this.newNoteTitle = '';
+            this.newNoteItems = ['', '', ''];
+            this.showForm = false;
+        },
 
         moveCard(card, fromColumn, toColumn) {
             if (toColumn.cards.length < toColumn.maxCards) {

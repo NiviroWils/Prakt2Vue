@@ -25,9 +25,17 @@
           <p v-if="card.completedDate">Completed: {{ card.completedDate }}</p>
         </div>
       </div>
-      <button class="add-button" @click="addCard(column)">Add Note</button>
-      <p v-if="column2Full && column.title === 'Столбец 1' && !column1Blocked" class="notification">Column 2 is full!</p>
-      <p v-if="column1Blocked && column.title === 'Столбец 1'" class="notification">Column 1 is blocked!</p>
+      <div v-if="showForm">
+        <h3>Добавить новую заметку</h3>
+        <input type="text" v-model="newNoteTitle" placeholder="Заголовок заметки">
+        <ul>
+          <li v-for="(item, index) in newNoteItems" :key="index">
+            <input type="text" v-model="newNoteItems[index]" :placeholder="'Пункт ' + (index + 1)">
+          </li>
+        </ul>
+        <button @click="addNote">Добавить заметку</button>
+      </div>
+      <button @click="toggleForm">Показать форму</button>
     </div>
   </div>
   <button class="clear-button" @click="clearLocalStorage">Clear Storage</button>
