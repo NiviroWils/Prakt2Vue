@@ -2,18 +2,17 @@ let app = new Vue({
     el: '#app',
     data: {
         columns: [
-            { title: 'Столбец 1', maxCards: 3, cards: [] },
-            { title: 'Столбец 2', maxCards: 5, cards: [] },
-            { title: 'Столбец 3', maxCards: Infinity, cards: [] },
+            { title: 'ToDo', maxCards: 3, cards: [] },
+            { title: '50%', maxCards: 5, cards: [] },
+            { title: '100%', maxCards: Infinity, cards: [] },
         ],
         newCardText: '',
         column1Blocked: false, // Переменная для отслеживания блокировки первого столбца
         column2Full: false, // Переменная для отслеживания переполнения второго столбца
         newNoteTitle: '', // Заголовок новой заметки
         newNoteItems: ['', '', ''], // Пункты новой заметки
-        newNoteItems5: ['', '', '','',''], // Пункты новой заметки
         showForm: false,
-        selectedItemsCount: 3,
+
     },
     mounted() {
         // Загрузка данных из localStorage при запуске
@@ -27,17 +26,9 @@ let app = new Vue({
             this.showForm = !this.showForm; // Переключаем видимость формы при нажатии на кнопку
         },
         addNote() {
-            // Определяем массив пунктов в зависимости от выбранного количества
-            let noteItemsArray;
-            if (this.selectedItemsCount === '5') {
-                noteItemsArray = this.newNoteItems5;
-            } else {
-                noteItemsArray = this.newNoteItems;
-            }
-
             const newCard = {
                 title: this.newNoteTitle || 'Новая заметка',
-                items: noteItemsArray.map(text => ({ text, completed: false })),
+                items: this.newNoteItems.map(text => ({ text, completed: false })),
                 completedDate: null,
             };
 
@@ -47,45 +38,38 @@ let app = new Vue({
             // Сброс формы и скрытие её после добавления заметки
             this.newNoteTitle = '';
             this.newNoteItems = ['', '', ''];
-            this.newNoteItems5 = ['', '', '', '', ''];
             this.showForm = false;
         },
-
-        addCard(column, withCheckboxes = false) {
-            if (column.cards.length < column.maxCards) {
-                const newCard = {
-                    title: 'Новая заметка',
-                    items: [
-                        { text: 'Пункт списка 1', completed: withCheckboxes },
-                        { text: 'Пункт списка 2', completed: withCheckboxes },
-                        { text: 'Пункт списка 3', completed: withCheckboxes },
-                    ],
-                    completedDate: withCheckboxes ? new Date().toLocaleString() : null,
-                };
-
-                column.cards.push(newCard);
+        addCard(newCard) {
+            if (this.columns[0].cards.length < 3) {
+                this.columns[0].cards.push(newCard);
                 this.saveToLocalStorage();
 
-                if (column.title === 'Столбец 2') {
-                    this.checkColumn2Full();
-                }
+                // Сброс формы и скрытие её после добавления заметки
+                this.newNoteTitle = '';
+                this.newNoteItems = ['', '', ''];
+                this.showForm = false;
+            } else {
+                // Set isFirstColumnFull to true to disable the form button
+                this.isFirstColumnFull = true;
+                // Handle case when the first column is full (you can show a message or take other actions)
             }
         },
         checkCompletion(card, column) {
             const completedCount = card.items.filter(item => item.completed).length;
             const totalItems = card.items.length;
 
-            if (column.title === 'Столбец 1' && completedCount >= 1 && !this.column1Blocked) {
+            if (column.title === 'ToDo' && completedCount >= 1 && !this.column1Blocked) {
                 this.moveCard(card, column, this.columns[1]);
-            } else if (column.title === 'Столбец 1' && completedCount === 0 && !this.column1Blocked) {
+            } else if (column.title === 'ToDo' && completedCount === 0 && !this.column1Blocked) {
                 return; // Если ни один пункт не отмечен, ничего не делаем
-            } else if (column.title === 'Столбец 2' && completedCount === totalItems) {
+            } else if (column.title === '50%' && completedCount === totalItems) {
                 this.moveCard(card, column, this.columns[2]);
-            } else if (column.title === 'Столбец 2' && completedCount === 0) {
+            } else if (column.title === '50%' && completedCount === 0) {
                 this.moveCard(card, column, this.columns[0]); // Переносим обратно в первый столбец, если ни один пункт не отмечен
-            } else if (column.title === 'Столбец 3' && completedCount === totalItems) { // Заменим эту строку
+            } else if (column.title === '100%' && completedCount === totalItems) { // Заменим эту строку
                 this.moveCard(card, column, this.columns[2]); // Переносим заметку в третий столбец, если все пункты отмечены
-            } else if (column.title === 'Столбец 3' && completedCount < totalItems) {
+            } else if (column.title === '100%' && completedCount < totalItems) {
                 this.moveCard(card, column, this.columns[1]);
             }
 
@@ -142,4 +126,10 @@ let app = new Vue({
             }
         },
     },
+    computed: {
+        isColumn1Full() {
+            return this.columns[0].cards.length >= 3;
+        }
+    },
+    
 });

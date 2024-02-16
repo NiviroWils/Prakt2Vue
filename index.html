@@ -27,37 +27,23 @@
       </div>
 
   </div>
+    <div v-if="showForm">
+      <h3>Добавить новую заметку</h3>
+      <input type="text" v-model="newNoteTitle" placeholder="Заголовок заметки">
+      <ul>
+        <li v-for="(item, index) in newNoteItems" :key="index">
+          <input type="text" v-model="newNoteItems[index]" :placeholder="'Пункт ' + (index + 1)">
+        </li>
+      </ul>
+      <button class="add-button" @click="addNote" :disabled="isColumn1Full">Добавить заметку</button>
+      <p v-if="isColumn1Full">Столбец "ToDo" переполнен. Невозможно добавить новую заметку!</p>
+    </div>
+    <button class="add-button" @click="toggleForm">Показать форму</button>
 
+  </div>
 
-</div>
   <button class="clear-button" @click="clearLocalStorage">Clear Storage</button>
-  <button @click="showAddNoteForm">Add Note</button>
-  <form v-if="showForm" @submit.prevent="addNote">
-    <label for="noteTitle">Note Title:</label><br>
-    <input type="text" id="noteTitle" v-model="newNoteTitle"><br>
 
-    <!-- Radio buttons to select the number of items -->
-    <input type="radio" id="threeItems" value="3" v-model="selectedItemsCount">
-    <label for="threeItems">3 Items</label><br>
-    <input type="radio" id="fiveItems" value="5" v-model="selectedItemsCount">
-    <label for="fiveItems">5 Items</label><br>
-
-    <!-- Dynamic input fields based on the selection -->
-    <template v-if="selectedItemsCount === '3'">
-      <input type="text" v-model="newNoteItems[0]"><br>
-      <input type="text" v-model="newNoteItems[1]"><br>
-      <input type="text" v-model="newNoteItems[2]"><br>
-    </template>
-    <template v-else>
-      <input type="text" v-model="newNoteItems5[0]"><br>
-      <input type="text" v-model="newNoteItems5[1]"><br>
-      <input type="text" v-model="newNoteItems5[2]"><br>
-      <input type="text" v-model="newNoteItems5[3]"><br>
-      <input type="text" v-model="newNoteItems5[4]"><br>
-    </template>
-
-    <button type="submit">Add Note</button>
-  </form>
 </div>
 
 </body>
