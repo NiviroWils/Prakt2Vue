@@ -33,18 +33,17 @@ let app = new Vue({
                 console.log("Во втором столбце достигнуто максимальное количество заметок. Нельзя отмечать пункты в карточках первого столбца.");
 
             }
-            if (this.isColumn2Full && column === this.columns[0] && card.items.filter(item => item.completed).length === 1) {
-                this.moveCard(card, this.columns[0], this.columns[1]);
-            }
-            if (column.title === 'ToDo' && completedCount >= 1 && !this.column1Blocked) {
-                this.moveCard(card, column, this.columns[1]);
-            } else if (column.title === 'ToDo' && completedCount === 0 && !this.column1Blocked) {
-                return; // Если ни один пункт не отмечен, ничего не делаем
-            } else if (column.title === '50%' && completedCount === totalItems) {
-                this.moveCard(card, column, this.columns[2]);
+            if (column.title === 'ToDo') {
+                if (completedCount >= 2 && totalItems === 3) {
+                    this.moveCard(card, column, this.columns[1]);
+                } else if (completedCount >= 2 && totalItems === 4) {
+                    this.moveCard(card, column, this.columns[1]);
+                } else if (completedCount >= 3 && totalItems === 5) {
+                    this.moveCard(card, column, this.columns[1]);
+                }
             } else if (column.title === '50%' && completedCount === 0) {
                 this.moveCard(card, column, this.columns[0]); // Переносим обратно в первый столбец, если ни один пункт не отмечен
-            } else if (column.title === '100%' && completedCount === totalItems) { // Заменим эту строку
+            } else if (column.title === '50%' && completedCount === totalItems) { // Заменим эту строку
                 this.moveCard(card, column, this.columns[2]); // Переносим заметку в третий столбец, если все пункты отмечены
             } else if (column.title === '100%' && completedCount < totalItems) {
                 this.moveCard(card, column, this.columns[1]);
