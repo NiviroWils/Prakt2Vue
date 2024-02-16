@@ -18,7 +18,7 @@
           <h3>{{ card.title }}</h3>
           <ul>
             <li v-for="(item, itemIndex) in card.items" :key="itemIndex">
-              <input type="checkbox" v-model="item.completed" @change="checkCompletion(card, column)">
+              <input type="checkbox" :disabled="isColumn2Full && index === 0" v-model="item.completed" @change="checkCompletion(card, column)">
               <span :class="{ completed: item.completed }">{{ item.text }}</span>
             </li>
           </ul>

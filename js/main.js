@@ -58,7 +58,13 @@ let app = new Vue({
         checkCompletion(card, column) {
             const completedCount = card.items.filter(item => item.completed).length;
             const totalItems = card.items.length;
+            if (this.isColumn2Full && column === this.columns[0] && this.isCheckboxBlocked) {
+                console.log("Во втором столбце достигнуто максимальное количество заметок. Нельзя отмечать пункты в карточках первого столбца.");
 
+            }
+            if (this.isColumn2Full && column === this.columns[0] && card.items.filter(item => item.completed).length === 1) {
+                this.moveCard(card, this.columns[0], this.columns[1]);
+            }
             if (column.title === 'ToDo' && completedCount >= 1 && !this.column1Blocked) {
                 this.moveCard(card, column, this.columns[1]);
             } else if (column.title === 'ToDo' && completedCount === 0 && !this.column1Blocked) {
@@ -100,8 +106,11 @@ let app = new Vue({
         },
 
         moveCard(card, fromColumn, toColumn) {
+            // Проверяем, что в третий столбец можно добавить карточку
             if (toColumn.cards.length < toColumn.maxCards) {
+                // Удаляем карточку из текущего столбца
                 fromColumn.cards.splice(fromColumn.cards.indexOf(card), 1);
+                // Добавляем карточку в целевой столбец
                 toColumn.cards.push(card);
             }
         },
@@ -129,6 +138,9 @@ let app = new Vue({
     computed: {
         isColumn1Full() {
             return this.columns[0].cards.length >= 3;
+        },
+        isColumn2Full() {
+            return this.columns[1].cards.length >= 5;
         }
     },
     
