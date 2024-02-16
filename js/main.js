@@ -10,7 +10,7 @@ let app = new Vue({
         column1Blocked: false, // Переменная для отслеживания блокировки первого столбца
         column2Full: false, // Переменная для отслеживания переполнения второго столбца
         newNoteTitle: '', // Заголовок новой заметки
-        newNoteItems: ['', '', ''], // Пункты новой заметки
+        newNoteItems: ['', '', '', '', ''], // Пункты новой заметки
         showForm: false,
 
     },
@@ -25,36 +25,7 @@ let app = new Vue({
         toggleForm() {
             this.showForm = !this.showForm; // Переключаем видимость формы при нажатии на кнопку
         },
-        addNote() {
-            const newCard = {
-                title: this.newNoteTitle || 'Новая заметка',
-                items: this.newNoteItems.map(text => ({ text, completed: false })),
-                completedDate: null,
-            };
 
-            this.columns[0].cards.push(newCard);
-            this.saveToLocalStorage();
-
-            // Сброс формы и скрытие её после добавления заметки
-            this.newNoteTitle = '';
-            this.newNoteItems = ['', '', ''];
-            this.showForm = false;
-        },
-        addCard(newCard) {
-            if (this.columns[0].cards.length < 3) {
-                this.columns[0].cards.push(newCard);
-                this.saveToLocalStorage();
-
-                // Сброс формы и скрытие её после добавления заметки
-                this.newNoteTitle = '';
-                this.newNoteItems = ['', '', ''];
-                this.showForm = false;
-            } else {
-                // Set isFirstColumnFull to true to disable the form button
-                this.isFirstColumnFull = true;
-                // Handle case when the first column is full (you can show a message or take other actions)
-            }
-        },
         checkCompletion(card, column) {
             const completedCount = card.items.filter(item => item.completed).length;
             const totalItems = card.items.length;
@@ -92,7 +63,10 @@ let app = new Vue({
         addNote() {
             const newCard = {
                 title: this.newNoteTitle || 'Новая заметка',
-                items: this.newNoteItems.map(text => ({ text, completed: false })),
+                items: this.newNoteItems
+                    .map(text => text.trim()) // Убираем лишние пробелы
+                    .filter(text => text !== '') // Фильтруем пустые пункты
+                    .map(text => ({ text, completed: false })), // Преобразуем каждый пункт в объект
                 completedDate: null,
             };
 
@@ -101,7 +75,7 @@ let app = new Vue({
 
             // Сброс формы и скрытие её после добавления заметки
             this.newNoteTitle = '';
-            this.newNoteItems = ['', '', ''];
+            this.newNoteItems = ['', '', '', '', ''];
             this.showForm = false;
         },
 
