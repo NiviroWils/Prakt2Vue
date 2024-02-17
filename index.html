@@ -19,6 +19,7 @@
           <ul>
             <li v-for="(item, itemIndex) in card.items" :key="itemIndex">
               <input type="checkbox" v-model="item.completed" @change="checkCompletion(card, column)">
+              <!--добавить логику блокировки чекбоксов через v-if и v-else-->
               <span :class="{ completed: item.completed }">{{ item.text }}</span>
             </li>
           </ul>
