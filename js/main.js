@@ -100,15 +100,15 @@ let app = new Vue({
         saveToLocalStorage() {
             localStorage.setItem('notes', JSON.stringify(this.columns));
         },
-        checkColumn2Full() {
-            if (this.columns[1].cards.length === this.columns[1].maxCards) {
-                this.column1Blocked = true;
-                this.column2Full = true;
-            } else {
-                this.column1Blocked = false;
-                this.column2Full = false;
-            }
-        },
+        // checkColumn2Full() {
+        //     if (this.columns[1].cards.length === this.columns[1].maxCards) {
+        //         this.column1Blocked = true;
+        //         this.column2Full = true;
+        //     } else {
+        //         this.column1Blocked = false;
+        //         this.column2Full = false;
+        //     }
+        // },
     },
     computed: {
         isColumn1Full() {
