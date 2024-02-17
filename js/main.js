@@ -11,7 +11,7 @@ let app = new Vue({
         column2Full: false, // Переменная для отслеживания переполнения второго столбца
         newNoteTitle: '', // Заголовок новой заметки
         newNoteItems: ['', '', '', '', ''], // Пункты новой заметки
-        showForm: false,
+        showForm: false, //Это для проверки скрыта форма или нет
 
     },
     mounted() {
@@ -29,10 +29,7 @@ let app = new Vue({
         checkCompletion(card, column) {
             const completedCount = card.items.filter(item => item.completed).length;
             const totalItems = card.items.length;
-            if (this.isColumn2Full && column === this.columns[0] && this.isCheckboxBlocked) {
-                console.log("Во втором столбце достигнуто максимальное количество заметок. Нельзя отмечать пункты в карточках первого столбца.");
 
-            }
             if (column.title === 'ToDo') {
                 if (completedCount >= 2 && totalItems === 3) {
                     this.moveCard(card, column, this.columns[1]);
@@ -43,7 +40,7 @@ let app = new Vue({
                 }
             } else if (column.title === '50%' && completedCount === 0) {
                 this.moveCard(card, column, this.columns[0]); // Переносим обратно в первый столбец, если ни один пункт не отмечен
-            } else if (column.title === '50%' && completedCount === totalItems) { // Заменим эту строку
+            } else if (column.title === '50%' && completedCount === totalItems) {
                 this.moveCard(card, column, this.columns[2]); // Переносим заметку в третий столбец, если все пункты отмечены
             } else if (column.title === '100%' && completedCount < totalItems) {
                 this.moveCard(card, column, this.columns[1]);
@@ -56,16 +53,21 @@ let app = new Vue({
             this.saveToLocalStorage();
         },
 
-        showAddNoteForm() {
-            this.showForm = true;
-        },
+
         addNote() {
+            // Проверяем, что есть как минимум три пункта в заметке
+            const totalItems = this.newNoteItems.filter(item => item.trim() !== '').length;
+            if (totalItems < 3) {
+                alert('Менее трёх пунктов нельзя заполнить.');
+                return;
+            }
+
             const newCard = {
                 title: this.newNoteTitle || 'Новая заметка',
                 items: this.newNoteItems
-                    .map(text => text.trim()) // Убираем лишние пробелы
-                    .filter(text => text !== '') // Фильтруем пустые пункты
-                    .map(text => ({ text, completed: false })), // Преобразуем каждый пункт в объект
+                    .map(text => text.trim())
+                    .filter(text => text !== '')
+                    .map(text => ({ text, completed: false })),
                 completedDate: null,
             };
 
