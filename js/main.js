@@ -31,12 +31,7 @@ let app = new Vue({
             const completedCount = card.items.filter(item => item.completed).length;
             const totalItems = card.items.length;
 
-            if (column.title === 'ToDo' && this.column2Full) {
-                this.column1Blocked = true;
-                return;
-            } else {
-                this.column1Blocked = false;
-            }
+          
 
             if (column.title === 'ToDo') {
                 if (completedCount >= 2 && totalItems === 3) {
@@ -118,19 +113,18 @@ let app = new Vue({
             }
 
             if (this.column2Full) {
-                this.columns[0].cards.forEach(card => {
+                this.column1Blocked = this.columns[0].cards.some(card => {
                     const completedCount = card.items.filter(item => item.completed).length;
                     const totalItems = card.items.length;
-                    if ((completedCount >= 2 && totalItems === 3) ||
-                        (completedCount >= 2 && totalItems === 4) ||
-                        (completedCount >= 3 && totalItems === 5)) {
-                        this.column1Blocked = true;
-                    }
+                    return (completedCount === 2 && totalItems === 3) ||
+                        (completedCount === 2 && totalItems === 4) ||
+                        (completedCount === 3 && totalItems === 5);
                 });
             } else {
                 this.column1Blocked = false;
             }
         },
+
 
 
     },
