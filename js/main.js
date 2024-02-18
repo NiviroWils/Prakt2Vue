@@ -20,6 +20,7 @@ let app = new Vue({
             this.columns = JSON.parse(localStorage.getItem('notes'));
             this.checkColumn2Full();
         }
+        this.checkColumn2Full();
     },
     methods: {
         toggleForm() {
@@ -30,6 +31,13 @@ let app = new Vue({
             const completedCount = card.items.filter(item => item.completed).length;
             const totalItems = card.items.length;
 
+            if (column.title === 'ToDo' && this.column2Full) {
+                this.column1Blocked = true;
+                return;
+            } else {
+                this.column1Blocked = false;
+            }
+
             if (column.title === 'ToDo') {
                 if (completedCount >= 2 && totalItems === 3) {
                     this.moveCard(card, column, this.columns[1]);
@@ -39,9 +47,9 @@ let app = new Vue({
                     this.moveCard(card, column, this.columns[1]);
                 }
             } else if (column.title === '50%' && completedCount === 0) {
-                this.moveCard(card, column, this.columns[0]); // Переносим обратно в первый столбец, если ни один пункт не отмечен
+                this.moveCard(card, column, this.columns[0]);
             } else if (column.title === '50%' && completedCount === totalItems) {
-                this.moveCard(card, column, this.columns[2]); // Переносим заметку в третий столбец, если все пункты отмечены
+                this.moveCard(card, column, this.columns[2]);
             } else if (column.title === '100%' && completedCount < totalItems) {
                 this.moveCard(card, column, this.columns[1]);
             }
@@ -51,7 +59,9 @@ let app = new Vue({
             }
 
             this.saveToLocalStorage();
+            this.checkColumn2Full();
         },
+
 
 
         addNote() {
@@ -102,21 +112,33 @@ let app = new Vue({
         },
         checkColumn2Full() {
             if (this.columns[1].cards.length === this.columns[1].maxCards) {
-                this.column1Blocked = true;
                 this.column2Full = true;
             } else {
-                this.column1Blocked = false;
                 this.column2Full = false;
             }
+
+            if (this.column2Full) {
+                this.columns[0].cards.forEach(card => {
+                    const completedCount = card.items.filter(item => item.completed).length;
+                    const totalItems = card.items.length;
+                    if ((completedCount >= 2 && totalItems === 3) ||
+                        (completedCount >= 2 && totalItems === 4) ||
+                        (completedCount >= 3 && totalItems === 5)) {
+                        this.column1Blocked = true;
+                    }
+                });
+            } else {
+                this.column1Blocked = false;
+            }
         },
+
+
     },
     computed: {
         isColumn1Full() {
             return this.columns[0].cards.length >= 3;
         },
-        isColumn2Full() {
-            return this.columns[1].cards.length >= 5;
-        }
+
     },
     
 });
