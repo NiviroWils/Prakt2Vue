@@ -133,7 +133,19 @@ let app = new Vue({
                 this.column1Blocked = false;
             }
         },
-
+        moveItemUp(columnIndex, cardIndex, itemIndex) {
+            if (itemIndex > 0) {
+                const itemToMove = this.columns[columnIndex].cards[cardIndex].items.splice(itemIndex, 1)[0];
+                this.columns[columnIndex].cards[cardIndex].items.splice(itemIndex - 1, 0, itemToMove);
+            }
+        },
+        moveItemDown(columnIndex, cardIndex, itemIndex) {
+            const card = this.columns[columnIndex].cards[cardIndex];
+            if (itemIndex < card.items.length - 1) {
+                const itemToMove = card.items.splice(itemIndex, 1)[0];
+                card.items.splice(itemIndex + 1, 0, itemToMove);
+            }
+        },
 
 
     },
