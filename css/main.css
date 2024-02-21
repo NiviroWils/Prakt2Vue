@@ -96,3 +96,22 @@ li {
 .clear-button:hover {
     background-color: #d32f2f;
 }
+
+.img_class{
+    width: 500px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+}
+.img_text{
+    text-align: center;
+}
+
+.img_div{
+    border: 3px solid #45a049;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+}

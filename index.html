@@ -10,6 +10,10 @@
 </head>
 <body>
 <div id="app">
+  <div class="img_div">
+    <img class="img_class" src="src/img/img1.gif">
+    <p class="img_text">ToDo лист для ваших задач, про которые вы, скорее всего, все равно забудете</p>
+  </div>
   <div class="container">
     <div v-for="(column, columnIndex) in columns" :key="columnIndex" class="column">
       <h2>{{ column.title }}</h2>
@@ -43,7 +47,7 @@
 
   </div>
 
-  <button class="clear-button" @click="clearLocalStorage">Clear Storage</button>
+  <button class="clear-button" @click="clearLocalStorage">Зачистить следы</button>
 
 </div>
 
