@@ -110,8 +110,19 @@ let app = new Vue({
                 this.column2Full = true;
             } else {
                 this.column2Full = false;
+                // Поиск первой подходящей карточки в первом столбце
+                const cardToMove = this.columns[0].cards.find(card => {
+                    const completedCount = card.items.filter(item => item.completed).length;
+                    const totalItems = card.items.length;
+                    return (completedCount === 2 && totalItems === 3) ||
+                        (completedCount === 2 && totalItems === 4) ||
+                        (completedCount === 3 && totalItems === 5);
+                });
+                // Если есть подходящая карточка, переместить ее во второй столбец
+                if (cardToMove) {
+                    this.moveCard(cardToMove, this.columns[0], this.columns[1]);
+                }
             }
-
             if (this.column2Full) {
                 this.column1Blocked = this.columns[0].cards.some(card => {
                     const completedCount = card.items.filter(item => item.completed).length;
