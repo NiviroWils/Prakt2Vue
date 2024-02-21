@@ -11,7 +11,7 @@
 <body>
 <div id="app">
   <div class="img_div">
-    <img class="img_class" src="src/img/img2.gif">
+    <img alt="man gif" class="img_class" src="src/img/img2.gif">
     <p class="img_text">ToDo лист для ваших задач, про которые вы, скорее всего, все равно забудете</p>
   </div>
   <div class="container">
@@ -23,7 +23,8 @@
           <h3>{{ card.title }}</h3>
           <ul>
             <li v-for="(item, itemIndex) in card.items" :key="itemIndex">
-              <input type="checkbox" v-model="item.completed" :disabled="column1Blocked && columnIndex === 0" @change="checkCompletion(card, column)">
+              <input type="checkbox" v-model="item.completed" :disabled="column1Blocked && columnIndex === 0 || columnIndex === 2" @change="checkCompletion(card, column)">
+
               <span :class="{ completed: item.completed }">{{ item.text }}</span>
             </li>
           </ul>

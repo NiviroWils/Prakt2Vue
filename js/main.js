@@ -45,8 +45,6 @@ let app = new Vue({
                 this.moveCard(card, column, this.columns[0]);
             } else if (column.title === '50%' && completedCount === totalItems) {
                 this.moveCard(card, column, this.columns[2]);
-            } else if (column.title === '100%' && completedCount < totalItems) {
-                this.moveCard(card, column, this.columns[1]);
             }
 
             if (completedCount === totalItems) {
